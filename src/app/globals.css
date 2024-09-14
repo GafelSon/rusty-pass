@@ -3,25 +3,214 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Accent Color */
+  --interface-light: #f7f7f7;
+  --interface-dark: #1e1e1e;
+  --blue-light: #005c99;
+  --blue-dark: #0763cc;
+  --purple-light: #8d3eaf;
+  --purple-dark: #9947c2;
+  --pink-light: #cc2b4b;
+  --pink-dark: #cc2544;
+  --red-light: #cc2e26;
+  --red-dark: #cc372d;
+  --orange-light: #cc7700;
+  --orange-dark: #cc8207;
+  --yellow-light: #cc9900;
+  --yellow-dark: #ccac07;
+  --green-light: #289346;
+  --green-dark: #248f41;
+  --graphite-light: #5c5c5c;
+  --graphite-dark: #adadad;
+
+  --box-light: #dad9d7;
+  --box-dark: #252628;
+
+  --border-light: #bdbdbd;
+  --border-dark: #424242;
+
+  /* Token Mode */
+  --background: var(--interface-light);
+  --foreground: var(--interface-dark);
+  --blue: var(--blue-light);
+  --purple: var(--purple-light);
+  --pink: var(--pink-light);
+  --red: var(--red-light);
+  --orange: var(--orange-light);
+  --yellow: var(--yellow-light);
+  --green: var(--green-light);
+  --gray: var(--graphite-light);
+
+  --box: var(--box-light);
+  --border: 1px solid var(--border-light);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--interface-dark);
+    --foreground: var(--interface-light);
+    --blue: var(--blue-dark);
+    --purple: var(--purple-dark);
+    --pink: var(--pink-dark);
+    --red: var(--red-dark);
+    --orange: var(--orange-dark);
+    --yellow: var(--yellow-dark);
+    --green: var(--green-dark);
+    --gray: var(--graphite-dark);
+
+    --box: var(--box-dark);
+    --border: 1px solid var(--border-dark);
   }
+}
+
+html {
+  width: 410 !important;
+  height: 700 !important;
+}
+
+html,
+body {
+  font-family:
+    "SF Pro Rounded",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif !important;
+}
+
+form > input {
+  font-family: "SF Mono" !important;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.titlebar {
+  user-select: none;
+  height: 3rem !important;
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+#app {
+  width: 100%;
+  margin: 2rem auto !important;
+  padding: 0 1rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+main {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.footer {
+  font-size: 0.875rem;
+  font-weight: 100;
+  color: var(--gray);
+}
+
+.header > h1 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: bold;
+}
+
+.header > span {
+  font-size: 0.875rem;
+  font-weight: 100;
+  color: var(--gray);
+}
+
+#user-interface {
+  margin-top: 4.25rem;
+  user-select: auto !important;
+  -moz-user-select: auto !important;
+  -ms-user-select: auto !important;
+  -webkit-user-select: auto !important;
+}
+
+.from-interaction {
+  width: 100%;
+}
+
+.from-interaction > p {
+  font-size: 0.875rem;
+  font-weight: 100;
+  color: var(--gray);
+}
+
+#area {
+  width: 100%;
+}
+
+input {
+  width: 100%;
+  line-height: 50px;
+  margin-top: 5px;
+  height: 50px;
+  border-radius: 12px;
+  padding: 0 1rem;
+  background-color: var(--box);
+  border: var(--border);
+  color: var(--foreground);
+}
+
+.strength-indicator {
+  margin-top: 0.5rem;
+  padding: 0 0.75rem;
+  width: 100%;
+  gap: 0.385rem;
+  display: flex;
+}
+
+.strength-bar {
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--box);
+  transition: backgroundColor 0.5s ease-in-out;
+}
+
+.w-tested {
+  width: 10%;
+}
+
+.m-tested {
+  width: 50%;
+}
+
+.s-tested {
+  width: 30%;
 }

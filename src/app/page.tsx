@@ -1,101 +1,107 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [password, setPassword] = useState("");
+  const [strength, setStrength] = useState(0); // Store strength as a number from 0 to 4
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  useEffect(() => {
+    // Mouse movement handler for Tauri drag region
+    const handleMouseMove = (event: MouseEvent) => {
+      if (event.clientY >= 0 && event.clientY <= 50) {
+        document.documentElement.setAttribute("data-tauri-drag-region", "true");
+      } else {
+        document.documentElement.removeAttribute("data-tauri-drag-region");
+      }
+    };
+
+    // Add mousemove event listener
+    window.addEventListener("mousemove", handleMouseMove);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      document.documentElement.removeAttribute("data-tauri-drag-region");
+    };
+  }, []);
+
+  // Function to check password strength and update strength value
+  const checkPasswordStrength = (password: string) => {
+    let score = 0;
+
+    // Check password length
+    if (password.length >= 8) score++;
+    
+    if (/[a-z]/.test(password) || /[A-Z]/.test(password)) score++;
+
+    // Check if it contains both lower and uppercase characters
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+
+    // Check if it contains numbers
+    if (/\d/.test(password)) score++;
+
+    // Check if it contains special characters
+    if (/[\W_]/.test(password)) score++;
+
+    setStrength(score);
+  };
+
+  // Handle real-time input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    checkPasswordStrength(newPassword);
+  };
+
+  return (
+    <div id="app">
+      <main>
+        <div className="header">
+          <h1>Rusty Pass</h1>
+          <span>Gafelson ✦ version 0.1.0 beta</span>
+        </div>
+
+        <div id="user-interface">
+          <form className="from-interaction">
+            <p>Password:</p>
+            <input
+              type="text"
+              id="password-input"
+              value={password}
+              onChange={handleChange}
+              className="password-input"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </form>
+
+          <div className="strength-indicator">
+            <div
+              className="strength-bar weak"
+              style={{
+                backgroundColor: strength >= 1 ? "var(--red)" : "var(--box)",
+                width: strength >= 1 ? "10%" : "8%",
+                transition: "width 0.5s ease-in-out",
+              }}
+            />
+            <div
+              className="strength-bar medium"
+              style={{
+                backgroundColor: strength >= 2 ? "var(--orange)" : "var(--box)",
+                width: strength >= 2 ? "50%" : "25%",
+                transition: "width 0.5s ease-in-out",
+              }}
+            />
+            <div
+              className="strength-bar strong"
+              style={{
+                backgroundColor: strength >= 5 ? "var(--green)" : "var(--box)",
+                width: strength === 5 ? "100%" : "60%",
+                transition: "width 0.5s ease-in-out",
+              }}
+            />
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
