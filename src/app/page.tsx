@@ -1,5 +1,6 @@
 "use client";
 
+import { invoke } from '@tauri-apps/api/tauri';
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -7,51 +8,36 @@ export default function Home() {
   const [strength, setStrength] = useState(0); // Store strength as a number from 0 to 4
 
   useEffect(() => {
-    // Mouse movement handler for Tauri drag region
     const handleMouseMove = (event: MouseEvent) => {
       if (event.clientY >= 0 && event.clientY <= 50) {
-        document.documentElement.setAttribute("data-tauri-drag-region", "true");
+        // Call Rust function to enable drag region
+        invoke('set_drag_region', { enable: true });
       } else {
-        document.documentElement.removeAttribute("data-tauri-drag-region");
+        // Call Rust function to disable drag region
+        invoke('set_drag_region', { enable: false });
       }
     };
 
     // Add mousemove event listener
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove);
 
     // Cleanup event listener on unmount
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      document.documentElement.removeAttribute("data-tauri-drag-region");
+      window.removeEventListener('mousemove', handleMouseMove);
+      // Ensure drag region is removed on cleanup
+      invoke('set_drag_region', { enable: false });
     };
   }, []);
-
-  // Function to check password strength and update strength value
-  const checkPasswordStrength = (password: string) => {
-    let score = 0;
-
-    // Check password length
-    if (password.length >= 8) score++;
-    
-    if (/[a-z]/.test(password) || /[A-Z]/.test(password)) score++;
-
-    // Check if it contains both lower and uppercase characters
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-
-    // Check if it contains numbers
-    if (/\d/.test(password)) score++;
-
-    // Check if it contains special characters
-    if (/[\W_]/.test(password)) score++;
-
-    setStrength(score);
-  };
-
-  // Handle real-time input change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
-    checkPasswordStrength(newPassword);
+  
+    // Call the Rust function via Tauri API
+    const strengthScore = await invoke('password_strength', { password: newPassword });
+    
+    // Update strength state with the result from Rust
+    setStrength(strengthScore as number);
   };
 
   return (
@@ -99,8 +85,10 @@ export default function Home() {
                 transition: "width 0.5s ease-in-out",
               }}
             />
+            <p>{ strength }</p>
           </div>
         </div>
+        <div className="mt-8 bg-red-500">salam</div>
       </main>
     </div>
   );
