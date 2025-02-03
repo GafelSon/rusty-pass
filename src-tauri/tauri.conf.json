@@ -33,7 +33,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "gafelson.open.dev",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -61,7 +61,7 @@
       {
         "fullscreen": false,
         "resizable": false,
-        "alwaysOnTop": true,
+        "transparent": true,
         "titleBarStyle": "Overlay",
         "title": "",
         "width": 410,

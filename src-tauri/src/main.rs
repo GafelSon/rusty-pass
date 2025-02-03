@@ -8,7 +8,7 @@ fn check_password_strength(password: &str) -> i32 {
     let mut score = 0;
 
     // Check common passwords
-    let common_pass = vec!["1234"];
+    let common_pass = vec!["1234", "1383"];
     if common_pass.contains(&password) {
         return -1000;
     }
@@ -47,6 +47,31 @@ fn check_password_strength(password: &str) -> i32 {
     score
 }
 
+use rand::Rng;
+
+// Function to generate a random password with symbols included
+fn generate_password(length: usize) -> String {
+    let charset: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+                           abcdefghijklmnopqrstuvwxyz\
+                           0123456789\
+                           !@#$%^&*()_+-=<>?"; // Add any symbols you want here
+
+    let password: String = (0..length)
+        .map(|_| {
+            let idx = rand::thread_rng().gen_range(0..charset.len());
+            charset[idx] as char
+        })
+        .collect();
+
+    password
+}
+
+// Command that can be invoked from the frontend
+#[tauri::command]
+fn pass_gen(length: usize) -> String {
+    generate_password(length)
+}
+
 #[command]
 fn password_strength(password: String) -> i32 {
     check_password_strength(&password)
@@ -60,14 +85,16 @@ fn set_drag_region(window: tauri::Window, enable: bool) {
         "document.documentElement.removeAttribute('data-tauri-drag-region');"
     };
 
-    window
-        .eval(script)
-        .expect("Failed to execute script");
+    window.eval(script).expect("Failed to execute script");
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![password_strength, set_drag_region])
+        .invoke_handler(tauri::generate_handler![
+            password_strength,
+            set_drag_region,
+            pass_gen
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
